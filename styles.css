@@ -1,0 +1,354 @@
+/* ============ Beach Bike Store — paleta da marca ============ */
+:root {
+  --black: #000000;
+  --ink: #0b0b0c;
+  --panel: #151517;
+  --line: #2a2a2e;
+  --white: #ffffff;
+  --muted: #8a8a92;
+  --yellow: #f8bb1c;
+  --yellow-dark: #d99d00;
+  --blue: #1da1e2;
+  --radius: 16px;
+  --font: "Montserrat", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --script: "Pacifico", "Segoe Script", cursive;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+button { font-family: inherit; cursor: pointer; }
+[hidden] { display: none !important; }
+
+.app {
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: max(16px, env(safe-area-inset-top)) clamp(16px, 4vw, 48px) max(12px, env(safe-area-inset-bottom));
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 45%, rgba(248, 187, 28, .10), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 100%, rgba(29, 161, 226, .10), transparent 70%),
+    var(--black);
+}
+
+/* ============ Topo ============ */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.logo { height: clamp(44px, 9vw, 84px); width: auto; display: block; }
+
+.price-field {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  opacity: .55;
+  transition: opacity .2s;
+}
+.price-field:focus-within, .price-field:hover { opacity: 1; }
+.price-label {
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.price-field input {
+  width: 130px;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--white);
+  font: 600 15px var(--font);
+  text-align: right;
+  padding: 4px 0;
+  outline: none;
+  user-select: text;
+}
+.price-field input:focus { border-color: var(--yellow); }
+.price-field input::placeholder { color: #55555c; }
+
+/* ============ Palco central ============ */
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 4vh, 44px);
+  min-height: 0;
+  text-align: center;
+}
+
+.welcome-kicker {
+  font-family: var(--script);
+  color: var(--blue);
+  font-size: clamp(26px, 5vw, 48px);
+  margin: 0 0 8px;
+}
+.welcome-title {
+  margin: 0;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(28px, 6vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -.01em;
+}
+.welcome-title span { color: var(--yellow); }
+
+.offer { display: flex; flex-direction: column; align-items: center; }
+.offer-kicker {
+  font-family: var(--script);
+  color: var(--blue);
+  font-size: clamp(22px, 4vw, 40px);
+  margin: 0;
+}
+.offer-main {
+  display: flex;
+  align-items: baseline;
+  gap: .3em;
+  font-weight: 800;
+  line-height: 1;
+  margin-top: 6px;
+  font-size: clamp(22px, 3.6vw, 44px);
+}
+.offer-times {
+  color: var(--yellow);
+  font-weight: 900;
+}
+.offer-de {
+  text-transform: lowercase;
+  color: var(--white);
+}
+.offer-value {
+  display: flex;
+  align-items: flex-start;
+  font-weight: 900;
+  line-height: .9;
+  letter-spacing: -.04em;
+  margin-top: .05em;
+}
+.offer-value .cur {
+  font-size: clamp(22px, 4.5vw, 54px);
+  margin: .35em .2em 0 0;
+  letter-spacing: 0;
+}
+.offer-value .int { font-size: clamp(90px, 21vw, 270px); }
+.offer-value .cents {
+  font-size: clamp(30px, 6.5vw, 84px);
+  margin-top: .18em;
+  letter-spacing: -.02em;
+}
+.offer-sub {
+  margin: 10px 0 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  font-size: clamp(11px, 1.6vw, 16px);
+  color: var(--muted);
+}
+
+.pop { animation: pop .28s ease-out; }
+@keyframes pop {
+  0% { transform: scale(.94); opacity: .4; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ============ Seletor de parcelas ============ */
+.selector {
+  width: min(680px, 100%);
+  padding: 0 8px;
+}
+#slider {
+  --fill: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 40px;           /* área de toque generosa */
+  background: transparent;
+  cursor: pointer;
+  margin: 0;
+  touch-action: pan-y;
+}
+#slider:focus { outline: none; }
+#slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--yellow) var(--fill), #26262b var(--fill));
+}
+#slider::-moz-range-track { height: 8px; border-radius: 999px; background: #26262b; }
+#slider::-moz-range-progress { height: 8px; border-radius: 999px; background: var(--yellow); }
+#slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 30px;
+  height: 30px;
+  margin-top: -11px;
+  border-radius: 50%;
+  background: var(--yellow);
+  border: 4px solid var(--black);
+  box-shadow: 0 0 0 2px var(--yellow), 0 4px 14px rgba(248, 187, 28, .35);
+  transition: transform .12s;
+}
+#slider:active::-webkit-slider-thumb { transform: scale(1.15); }
+#slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--yellow);
+  border: 4px solid var(--black);
+  box-shadow: 0 0 0 2px var(--yellow);
+}
+.scale {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #5c5c64;
+}
+
+/* ============ Rodapé ============ */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 32px;
+}
+.legal {
+  margin: 0;
+  font-size: 11px;
+  color: #6c6c74;
+  line-height: 1.4;
+}
+.gear {
+  background: none;
+  border: 0;
+  color: #3a3a40;
+  padding: 6px;
+  border-radius: 8px;
+  transition: color .2s;
+}
+.gear:hover, .gear:focus-visible { color: var(--muted); }
+
+/* ============ Diálogos ============ */
+.dialog {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  color: var(--white);
+  padding: 0;
+  width: min(760px, 94vw);
+  max-height: 92dvh;
+  user-select: text;
+}
+.dialog::backdrop { background: rgba(0, 0, 0, .75); backdrop-filter: blur(4px); }
+.dialog-sm { width: min(360px, 92vw); }
+.dialog-sm form { padding: 24px; }
+.dialog h2 { margin: 0 0 6px; font-size: 20px; font-weight: 800; }
+.dialog h3 { margin: 0 0 4px; font-size: 15px; font-weight: 800; color: var(--yellow); }
+.muted { color: var(--muted); font-size: 13px; margin: 0 0 14px; line-height: 1.45; }
+.muted code { color: var(--white); background: #222226; padding: 1px 6px; border-radius: 6px; }
+.error { color: #ff6b6b; font-size: 13px; margin: 8px 0 0; }
+
+.dialog input {
+  width: 100%;
+  background: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--white);
+  font: 600 15px var(--font);
+  padding: 10px 12px;
+  outline: none;
+}
+.dialog input:focus { border-color: var(--yellow); }
+
+#settingsForm { display: flex; flex-direction: column; max-height: 92dvh; }
+.settings-head, .settings-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+}
+.settings-head { justify-content: space-between; border-bottom: 1px solid var(--line); }
+.settings-foot { border-top: 1px solid var(--line); flex-wrap: wrap; }
+.settings-body { overflow-y: auto; padding: 16px 20px; display: grid; gap: 14px; }
+.spacer { flex: 1; }
+
+.card {
+  background: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.rates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px;
+}
+.rate {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 6px 8px;
+}
+.rate b { min-width: 30px; font-size: 14px; color: var(--yellow); }
+.rate input {
+  padding: 6px 4px;
+  text-align: right;
+  font-size: 14px;
+  border-radius: 6px;
+  background: var(--ink);
+}
+.rate span { color: var(--muted); font-size: 13px; }
+
+.tiers { display: grid; gap: 8px; margin-bottom: 10px; }
+.tier {
+  display: grid;
+  grid-template-columns: auto 1fr auto 90px auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.tier input { padding: 8px 10px; }
+
+.field { display: grid; gap: 6px; margin-top: 10px; font-size: 13px; color: var(--muted); }
+
+.actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.btn {
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-weight: 800;
+  font-size: 14px;
+  border: 1px solid transparent;
+}
+.btn.small { padding: 8px 12px; font-size: 13px; }
+.btn.primary { background: var(--yellow); color: var(--black); }
+.btn.primary:hover { background: var(--yellow-dark); }
+.btn.ghost { background: transparent; color: var(--white); border-color: var(--line); }
+.btn.ghost:hover { border-color: var(--muted); }
+.btn.danger { color: #ff8a8a; }
+.icon-btn {
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font-size: 18px;
+  padding: 4px 8px;
+}
+
+@media (max-height: 560px) {
+  .offer-value .int { font-size: clamp(64px, 14vw, 160px); }}

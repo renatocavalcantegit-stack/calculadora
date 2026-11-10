@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title>Beach Bike Store</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&family=Pacifico&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Topo: logo + campo de valor discreto (uso do vendedor) -->
+    <header class="topbar">
+      <img src="assets/logo.png" alt="Beach Bike Store" class="logo">
+      <label class="price-field" for="price">
+        <span class="price-label">valor</span>
+        <input id="price" type="text" inputmode="numeric" autocomplete="off" placeholder="R$ 0,00" aria-label="Valor da bicicleta">
+      </label>
+    </header>
+
+    <!-- Destaque central: a parcela como anúncio -->
+    <main class="stage">
+      <section id="welcome" class="welcome">
+        <p class="welcome-kicker">sua bike nova</p>
+        <p class="welcome-title">em parcelas que<br><span>cabem no seu bolso</span></p>
+      </section>
+
+      <section id="offer" class="offer" hidden>
+        <p class="offer-kicker">leve hoje</p>
+        <div class="offer-main">
+          <span class="offer-de">em</span>
+          <span id="offerTimes" class="offer-times">21x</span>
+          <span class="offer-de">de</span>
+        </div>
+        <div id="offerValue" class="offer-value">
+          <span class="cur">R$</span><span id="offerInt" class="int">0</span><span id="offerCents" class="cents">,00</span>
+        </div>
+        <p id="offerSub" class="offer-sub">no cartão de crédito</p>
+      </section>
+
+      <div id="selector" class="selector" hidden>
+        <input id="slider" type="range" min="1" max="21" step="1" value="21" aria-label="Quantidade de parcelas">
+        <div class="scale"><span>1x</span><span id="sliderMax">21x</span></div>
+      </div>
+    </main>
+
+    <!-- Rodapé: informação legal discreta + configuração -->
+    <footer class="footer">
+      <p id="legal" class="legal"></p>
+      <button id="openSettings" class="gear" aria-label="Configurações" title="Configurações">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M19.14 12.94c.04-.31.06-.62.06-.94s-.02-.63-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.5.5 0 0 0-.59-.22l-2.39.96a7.03 7.03 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.48.48 0 0 0-.48.41l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87a.48.48 0 0 0 .12.61l2.03 1.58c-.05.31-.07.63-.07.94s.02.63.06.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.48.48 0 0 0-.12-.61l-2.01-1.58zM12 15.6A3.6 3.6 0 1 1 12 8.4a3.6 3.6 0 0 1 0 7.2z"/></svg>
+      </button>
+    </footer>
+  </div>
+
+  <!-- PIN -->
+  <dialog id="pinDialog" class="dialog dialog-sm">
+    <form method="dialog" id="pinForm">
+      <h2>Área do vendedor</h2>
+      <p class="muted">Digite o PIN para acessar as configurações.</p>
+      <input id="pinInput" type="password" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="PIN">
+      <p id="pinError" class="error" hidden>PIN incorreto</p>
+      <div class="actions">
+        <button type="button" class="btn ghost" data-close>Cancelar</button>
+        <button type="submit" class="btn primary">Entrar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Configurações -->
+  <dialog id="settingsDialog" class="dialog">
+    <form id="settingsForm" method="dialog">
+      <div class="settings-head">
+        <h2>Configurações</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Fechar">✕</button>
+      </div>
+
+      <div class="settings-body">
+        <section class="card">
+          <h3>Taxas por quantidade de parcelas</h3>
+          <p class="muted">Fórmula: <code>total = preço ÷ (1 − taxa)</code>. A parcela é o total dividido pela quantidade.</p>
+          <div id="ratesGrid" class="rates-grid"></div>
+        </section>
+
+        <section class="card">
+          <h3>Máximo de parcelas por faixa de preço</h3>
+          <p class="muted">A partir do valor mínimo, a bike pode ser parcelada até o máximo indicado. Vale a maior faixa atingida.</p>
+          <div id="tiersList" class="tiers"></div>
+          <button type="button" id="addTier" class="btn ghost small">+ Adicionar faixa</button>
+        </section>
+
+        <section class="card">
+          <h3>Textos e segurança</h3>
+          <label class="field">
+            <span>Texto abaixo da parcela</span>
+            <input id="cfgSubtitle" type="text" maxlength="40">
+          </label>
+          <label class="field">
+            <span>Novo PIN (deixe vazio para manter)</span>
+            <input id="cfgPin" type="password" inputmode="numeric" maxlength="8" autocomplete="new-password">
+          </label>
+        </section>
+      </div>
+
+      <div class="settings-foot">
+        <button type="button" id="resetDefaults" class="btn ghost danger">Restaurar padrão</button>
+        <div class="spacer"></div>
+        <button type="button" class="btn ghost" data-close>Cancelar</button>
+        <button type="submit" class="btn primary">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
