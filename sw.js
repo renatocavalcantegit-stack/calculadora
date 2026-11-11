@@ -1,5 +1,5 @@
 // Service worker: deixa a calculadora funcionando offline.
-const CACHE = "bbs-calc-v1";
+const CACHE = "bbs-calc-v2";
 const ASSETS = ["./", "index.html", "styles.css", "app.js", "manifest.json", "assets/logo.png", "assets/icon.svg"];
 
 self.addEventListener("install", (e) => {

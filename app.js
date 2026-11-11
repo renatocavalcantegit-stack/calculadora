@@ -6,9 +6,26 @@
 const MAX_PARCELAS = 21;
 const STORAGE_KEY = "bbs-calc-config-v1";
 
-// Valores de TESTE: 1x = 0%, 2x = 2%, 3x = 4% ... 21x = 40%
+// Versão da tabela padrão. AUMENTE este número sempre que mudar as taxas/faixas
+// abaixo: os aparelhos já configurados passam a usar a nova tabela (o PIN é mantido).
+const DEFAULTS_VERSION = 2;
+
+// Taxas da loja (% sobre o preço). 1x a 10x = sem juros.
 const DEFAULTS = {
-  rates: Array.from({ length: MAX_PARCELAS }, (_, i) => i * 2),
+  rates: [
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, //  1x a 10x
+    4.59,  // 11x
+    6.39,  // 12x
+    7.99,  // 13x
+    8.99,  // 14x
+    9.99,  // 15x
+    10.99, // 16x
+    11.99, // 17x
+    11.99, // 18x
+    13.59, // 19x
+    14.49, // 20x
+    14.99, // 21x
+  ],
   tiers: [
     { min: 0, max: 12 },     // até R$ 2.999,99 -> até 12x
     { min: 3000, max: 21 },  // a partir de R$ 3.000 -> até 21x
@@ -22,6 +39,12 @@ function loadConfig() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (!saved) return structuredClone(DEFAULTS);
+    if (saved.defaultsVersion !== DEFAULTS_VERSION) {
+      // tabela da loja foi atualizada: aplica as novas taxas/faixas, mantém PIN e texto
+      const migrated = { ...structuredClone(DEFAULTS), pin: saved.pin || DEFAULTS.pin, subtitle: saved.subtitle || DEFAULTS.subtitle };
+      saveConfig(migrated);
+      return migrated;
+    }
     return {
       ...structuredClone(DEFAULTS),
       ...saved,
@@ -33,7 +56,7 @@ function loadConfig() {
   }
 }
 function saveConfig(cfg) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...cfg, defaultsVersion: DEFAULTS_VERSION }));
 }
 
 let config = loadConfig();
@@ -111,8 +134,12 @@ function render({ animate = false } = {}) {
   $("offerCents").textContent = `,${cents}`;
   $("offerSub").textContent = config.subtitle;
 
-  legal.textContent =
-    `Preço à vista ${brl.format(price)} · Total a prazo ${brl.format(r.total)} em ${selected}x de ${brl.format(r.parcela)}`;
+  const semJuros = selected > 1 && !(config.rates[selected - 1] > 0);
+  $("badge").hidden = !semJuros;
+
+  legal.textContent = semJuros
+    ? `Preço à vista ${brl.format(price)} · ${selected}x de ${brl.format(r.parcela)} sem juros`
+    : `Preço à vista ${brl.format(price)} · Total a prazo ${brl.format(r.total)} em ${selected}x de ${brl.format(r.parcela)}`;
 
   if (animate) {
     const el = $("offerValue");
